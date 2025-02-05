@@ -1,6 +1,8 @@
 # Use the official OWASP Dependency-Check image
 FROM owasp/dependency-check:latest
 
+USER root
+
 # Declare build argument for NVD API key
 ARG NVD_API_KEY
 
