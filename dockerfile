@@ -1,8 +1,6 @@
 # Use the official OWASP Dependency-Check image
 FROM owasp/dependency-check:latest
 
-USER root
-
 # Declare build argument for NVD API key
 ARG NVD_API_KEY
 
@@ -17,14 +15,7 @@ WORKDIR ${SCAN_PATH}
 # Define volumes for source code and reports
 VOLUME ["/src", "/report"]
 
-# Install `shadow` package to get `adduser` (Alpine-based image)
-RUN apk add --no-cache shadow
-
-# Create a non-root user with `adduser`
-RUN adduser -D -s /bin/sh ${USERNAME} && \
-    chown -R ${USERNAME}:${USERNAME} /usr/share/dependency-check /src /report
-
-# Switch to non-root user
+# Switch to the existing non-root user `dependencycheck`
 USER ${USERNAME}
 
 # Update NVD data as the new user
