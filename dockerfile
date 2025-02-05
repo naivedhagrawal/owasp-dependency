@@ -8,15 +8,15 @@ ARG NVD_API_KEY
 ENV SCAN_PATH=/app \
     NVD_DATA_PATH=/opt/dependency-check/data
 
-# Update NVD data during build (optional)
-RUN dependency-check --updateonly --nvdApiKey ${NVD_API_KEY} && \
+# Update NVD data during build (using the full path to dependency-check)
+RUN /usr/local/bin/dependency-check --updateonly --nvdApiKey ${NVD_API_KEY} && \
     rm -rf /opt/dependency-check/data/.lock
 
 # Set working directory
 WORKDIR ${SCAN_PATH}
 
 # Set entrypoint to Dependency-Check script
-ENTRYPOINT ["dependency-check"]
+ENTRYPOINT ["/usr/local/bin/dependency-check"]
 
 # Default command to scan the working directory
 CMD ["--scan", "${SCAN_PATH}", "--nvdApiKey", "${NVD_API_KEY}"]
