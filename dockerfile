@@ -1,21 +1,8 @@
 # Use the official OWASP Dependency-Check image
 FROM owasp/dependency-check:latest
 
-USER root
-
 # Declare build argument for NVD API key
 ARG NVD_API_KEY
-
-# Set environment variables
-ENV SCAN_PATH=/src \
-    REPORT_PATH=/report \
-    USERNAME=dependencycheck
-
-# Set working directory
-WORKDIR ${SCAN_PATH}
-
-# Define volumes for source code and reports
-VOLUME ["/src", "/report"]
 
 # Switch to the existing non-root user `dependencycheck`
 USER ${USERNAME}
