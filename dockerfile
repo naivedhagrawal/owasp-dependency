@@ -5,7 +5,7 @@ FROM owasp/dependency-check:latest
 ARG NVD_API_KEY
 
 # Switch to the existing non-root user `dependencycheck`
-USER ${USERNAME}
+USER dependencycheck
 
 # Update NVD data as the new user
 RUN /usr/share/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey ${NVD_API_KEY}
