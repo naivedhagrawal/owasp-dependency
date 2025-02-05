@@ -15,8 +15,11 @@ WORKDIR ${SCAN_PATH}
 # Define volumes for source code and reports
 VOLUME ["/src", "/report"]
 
-# Create a non-root user with username `dependencycheck` and assign permissions
-RUN useradd --create-home --shell /bin/bash ${USERNAME} && \
+# Install `shadow` package to get `adduser` (Alpine-based image)
+RUN apk add --no-cache shadow
+
+# Create a non-root user with `adduser`
+RUN adduser -D -s /bin/sh ${USERNAME} && \
     chown -R ${USERNAME}:${USERNAME} /usr/share/dependency-check /src /report
 
 # Switch to non-root user
