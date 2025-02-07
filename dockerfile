@@ -4,14 +4,8 @@ FROM owasp/dependency-check:latest
 # Declare build argument for NVD API key
 ARG NVD_API_KEY
 
-# Switch to the existing non-root user `dependencycheck`
-USER dependencycheck
+# Set the environment variable for runtime use
+ENV NVD_API_KEY=${NVD_API_KEY}
 
-# Update NVD data as the new user
-RUN /usr/share/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey ${NVD_API_KEY}
-
-# Set ENTRYPOINT to always run dependency-check.sh
-ENTRYPOINT ["/usr/share/dependency-check/bin/dependency-check.sh"]
-
-# Default CMD for scanning
-CMD ["--scan", "/src", "--out", "/report", "--nvdApiKey", "${NVD_API_KEY}"]
+# Run NVD database update before scanning
+CMD ["/bin/sh", "-c", "/usr/share/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey $NVD_API_KEY && exec /usr/share/dependency-check/bin/dependency-check.sh --scan /src --out /report --nvdApiKey $NVD_API_KEY"]
