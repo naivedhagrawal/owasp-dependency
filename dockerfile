@@ -1,11 +1,22 @@
-# Use the official OWASP Dependency-Check image
 FROM owasp/dependency-check:latest
 
-# Declare build argument for NVD API key
-ARG NVD_API_KEY
+# Set environment variables
+ENV NVD_API_KEY="NVD_API_KEY"
 
-# Set the environment variable for runtime use
-ENV NVD_API_KEY=${NVD_API_KEY}
+# Update the NVD database
+RUN /usr/share/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey ${NVD_API_KEY}
 
-# Run NVD database update before scanning
-CMD ["/bin/sh", "-c", "/usr/share/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey $NVD_API_KEY && exec /usr/share/dependency-check/bin/dependency-check.sh --scan /src --out /report --nvdApiKey $NVD_API_KEY"]
+# Set working directory
+WORKDIR /src
+
+# Define volumes
+VOLUME ["/src", "/report"]
+
+# Set user
+USER 1000
+
+# Default command
+CMD ["--help"]
+
+# Entry point
+ENTRYPOINT ["/usr/share/dependency-check/bin/dependency-check.sh"]
