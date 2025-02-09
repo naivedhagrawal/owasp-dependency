@@ -11,7 +11,7 @@ pipeline {
         IMAGE_TAG = "latest"
         DOCKER_HUB_REPO = "naivedh/owasp-dependency"
         DOCKER_CREDENTIALS = "docker_hub_up"
-        REPORT_FILE = "trivy-report.json"
+        REPORT_FILE = "trivy-report.sarif"
     }
 
     stages {
@@ -35,10 +35,13 @@ pipeline {
                     script {
                         // Scan the Docker image with Trivy || --exit-code 1 --severity HIGH,CRITICAL
                         sh "mkdir -p /root/.cache/trivy/db"
-                        sh "trivy image --download-db-only --timeout 60m --debug"
+                        sh "trivy image --download-db-only --timeout 15m --debug"
                         echo "Scanning image with Trivy..."
-                        sh "trivy image ${IMAGE_NAME}:${IMAGE_TAG} --timeout 30m --format json --output ${REPORT_FILE} --debug"
+                        sh "trivy image ${IMAGE_NAME}:${IMAGE_TAG} --timeout 30m --format sarif --output ${REPORT_FILE} --debug"
                         archiveArtifacts artifacts: "${REPORT_FILE}", fingerprint: true
+                        recordIssues(
+                                enabledForFailure: true,
+                                tool: sarif(pattern: "${env.REPORT_FILE}", id: "TRIVY-SARIF", name: "Trivy-Report" ))
                     }
                 }
             }
