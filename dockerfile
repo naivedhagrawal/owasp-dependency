@@ -5,7 +5,7 @@ FROM openjdk:11-jre-slim
 ARG NVD_API_KEY
 
 # Set environment variables
-ENV DEPENDENCY_CHECK_VERSION=12.0.1 \
+ENV DEPENDENCY_CHECK_VERSION=12.0.2 \
     SCAN_PATH=/app \
     NVD_DATA_PATH=/opt/dependency-check/data
 
