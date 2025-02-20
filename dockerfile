@@ -31,9 +31,3 @@ ENTRYPOINT ["/usr/local/bin/dependency-check"]
 
 # Default command to scan the working directory
 CMD ["--scan", "${SCAN_PATH}", "--nvdApiKey", "${NVD_API_KEY}"]
-
-# Instructions for the user (optional but helpful)
-# Build the Docker image:
-# docker build --build-arg NVD_API_KEY=<your-key> -t dependency-check:12.0.1 .
-# Run the container:
-# docker run -v $(pwd):/app -e NVD_API_KEY=<your-key> dependency-check:12.0.1
