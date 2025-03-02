@@ -1,5 +1,5 @@
-# Use OpenJDK 11 slim as the base image
-FROM openjdk:11-jre-slim
+# Use the latest Eclipse Temurin (OpenJDK) as the base image
+FROM eclipse-temurin:latest
 
 # Declare build argument for NVD API key
 ARG NVD_API_KEY
