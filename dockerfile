@@ -1,3 +1,4 @@
+# Use BuildKit's secret feature instead of ARG
 # Use the latest Eclipse Temurin (OpenJDK) as the base image
 FROM eclipse-temurin:latest
 
@@ -16,7 +17,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Use Docker's secret management to securely pass the API key
+# Securely pass API key using Docker BuildKit secrets
 RUN --mount=type=secret,id=NVD_API_KEY \
     /usr/local/bin/dependency-check --updateonly --nvdApiKey "$(cat /run/secrets/NVD_API_KEY)" && \
     rm -rf /opt/dependency-check/data/.lock
