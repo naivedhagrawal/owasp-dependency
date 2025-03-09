@@ -16,14 +16,14 @@ RUN apt-get update && \
     rm dependency-check-${DEPENDENCY_CHECK_VERSION}-release.zip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-RUN --mount=type=secret,id=NVD_API_KEY cat /run/secrets/NVD_API_KEY
 
 # Securely pass API key using Docker BuildKit secrets
 RUN --mount=type=secret,id=NVD_API_KEY \
-    /usr/local/bin/dependency-check --updateonly --nvdApiKey "$(cat /run/secrets/NVD_API_KEY)" && \
+    echo "NVD API Key: $(cat /run/secrets/NVD_API_KEY | tr -d '\n')" && \
+    /usr/local/bin/dependency-check --updateonly --nvdApiKey "$(cat /run/secrets/NVD_API_KEY | tr -d '\n')" && \
     rm -rf /opt/dependency-check/data/.lock
 
-# Set working directory
+# Set working directory    
 WORKDIR ${SCAN_PATH}
 
 # Set entrypoint to Dependency-Check script
