@@ -4,8 +4,7 @@ FROM eclipse-temurin:latest
 # Set environment variables
 ENV DEPENDENCY_CHECK_VERSION=12.1.0 \
     SCAN_PATH=/app \
-    NVD_DATA_PATH=/opt/dependency-check/data \
-    NVD_API_KEY=""
+    NVD_DATA_PATH=/opt/dependency-check/data
 
 # Install dependencies and Dependency-Check
 RUN apt-get update && \
@@ -17,8 +16,9 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Update NVD data during build (with a default or runtime API key)
-RUN /usr/local/bin/dependency-check --updateonly --nvdApiKey "$NVD_API_KEY" && \
+# Use Docker's secret management to securely pass the API key
+RUN --mount=type=secret,id=NVD_API_KEY \
+    /usr/local/bin/dependency-check --updateonly --nvdApiKey "$(cat /run/secrets/NVD_API_KEY)" && \
     rm -rf /opt/dependency-check/data/.lock
 
 # Set working directory
@@ -28,4 +28,4 @@ WORKDIR ${SCAN_PATH}
 ENTRYPOINT ["/usr/local/bin/dependency-check"]
 
 # Default command to scan the working directory
-CMD ["--scan", "${SCAN_PATH}", "--nvdApiKey", "$NVD_API_KEY"]
+CMD ["--scan", "${SCAN_PATH}"]
