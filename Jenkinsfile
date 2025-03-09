@@ -21,7 +21,10 @@ pipeline {
                     script {
                         withCredentials([string(credentialsId: 'NVD_API_KEY', variable: 'NVD_API_KEY')]) {
                         sh """
-                        echo "$NVD_API_KEY" | docker build --secret id=NVD_API_KEY,stdin -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                            export DOCKER_BUILDKIT=1
+                            echo -n "$NVD_API_KEY" > /tmp/NVD_API_KEY
+                            docker build --secret id=NVD_API_KEY,src=/tmp/NVD_API_KEY -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                            rm -f /tmp/NVD_API_KEY
                         """
                         }
                     }
