@@ -21,7 +21,7 @@ pipeline {
                     script {
                         withCredentials([string(credentialsId: 'NVD_API_KEY', variable: 'NVD_API_KEY')]) {
                         sh """
-                        docker build --build-arg NVD_API_KEY=$NVD_API_KEY -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                        docker build --build-arg NVD_API_KEY=${NVD_API_KEY} -t ${IMAGE_NAME}:${IMAGE_TAG} .
                         """
                         }
                     }
